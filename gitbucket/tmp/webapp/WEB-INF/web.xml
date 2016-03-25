@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+
+  <!-- ===================================================================== -->
+  <!-- Session configuration -->
+  <!-- ===================================================================== -->
+  <listener>
+    <listener-class>gitbucket.core.servlet.SessionCleanupListener</listener-class>
+  </listener>
+
+  <!-- ===================================================================== -->
+  <!-- Automatic migration and plug-in initialization -->
+  <!-- ===================================================================== -->
+  <listener>
+    <listener-class>gitbucket.core.servlet.InitializeListener</listener-class>
+  </listener>
+
+
+  <!-- ===================================================================== -->
+  <!-- Scalatra configuration -->
+  <!-- ===================================================================== -->
+  <listener>
+    <listener-class>org.scalatra.servlet.ScalatraListener</listener-class>
+  </listener>
+
+  <!-- ===================================================================== -->
+  <!-- SSH Daemon initialized -->
+  <!-- ===================================================================== -->
+  <listener>
+    <listener-class>gitbucket.core.ssh.SshServerListener</listener-class>
+  </listener>
+
+  <!-- ===================================================================== -->
+  <!-- HTTP interface for Git repositories -->
+  <!-- ===================================================================== -->
+  <servlet>
+    <servlet-name>GitRepositoryServlet</servlet-name>
+    <servlet-class>gitbucket.core.servlet.GitRepositoryServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>GitRepositoryServlet</servlet-name>
+    <url-pattern>/git/*</url-pattern>
+  </servlet-mapping>
+ 
+  <!-- ===================================================================== -->
+  <!-- H2 console configuration -->
+  <!-- ===================================================================== -->
+  <servlet>
+    <servlet-name>H2Console</servlet-name>
+    <servlet-class>org.h2.server.web.WebServlet</servlet-class>
+    <init-param>
+        <param-name>webAllowOthers</param-name>
+        <param-value></param-value>
+    </init-param>
+      <!--
+      <init-param>
+          <param-name>trace</param-name>
+          <param-value></param-value>
+      </init-param>
+      -->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>H2Console</servlet-name>
+    <url-pattern>/console/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- ===================================================================== -->
+  <!-- Session timeout -->
+  <!-- ===================================================================== -->
+  <session-config>
+    <session-timeout>1440</session-timeout>
+  </session-config>
+
+  <!-- ===================================================================== -->
+  <!-- Optional configurations -->
+  <!-- ===================================================================== -->
+  <!--
+  <context-param>
+    <param-name>gitbucket.home</param-name>
+    <param-value>PATH_TO_DATADIR</param-value>
+  </context-param>
+  -->
+
+</web-app>

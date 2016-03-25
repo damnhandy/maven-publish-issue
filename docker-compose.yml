@@ -1,0 +1,24 @@
+artifactory:
+  image: jfrog-docker-reg2.bintray.io/jfrog/artifactory-oss:4.6.1
+  environment:
+    JAVA_OPTS: "-Djava.awt.headless=true"
+  ports:
+    - "8081:8081"
+
+gitbucket:
+  image: damnhandy/gitbucketdocker
+  ports:
+    - "8080:8080"
+  volumes:
+    - ./gitbucket:/var/gitbucket
+
+workspace:
+  image: maven:3.3.9-jdk-8
+  working_dir: /root
+  stdin_open: true
+  tty: true
+  links:
+    - artifactory
+    - gitbucket
+  volumes:
+    - ./workspace/root:/root
