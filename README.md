@@ -36,7 +36,63 @@ You should be able to build the project now:
 	cd maven-project
 	mvn clean install
 
+If build is successful, you can now test the issues.
 
+## Running the release
+
+The `settings.xml` file contains plain text passwords for both Artifactory and Gitbucket. They are crappy passwords and aren't the way you'd want to do things in a prodution environment. I did it this way to demo the bugs. To see what is going on, run the Maven Release plugin prepare goal by running:
+
+	mvn release:prepare
+
+Answer the typical Maven Release plugin questions:
+
+	[INFO] Verifying that there are no local modifications...
+	[INFO]   ignoring changes on: **/pom.xml.releaseBackup, **/pom.xml.next, **/pom.xml.tag, **/	pom.xml.branch, **/release.properties, **/pom.xml.backup
+	[INFO] Executing: /bin/sh -c cd /root/maven-project && git status
+	[INFO] Working directory: /root/maven-project
+	[INFO] Checking dependencies and plugins for snapshots ...
+	What is the release version for "mvn-release-test"? (com.damnhandy:mvn-release-test) 1.0.0: : 
+	What is SCM release tag or label for "mvn-release-test"? (com.damnhandy:mvn-release-test) mvn-release-test-1.0.0: : 
+	What is the new development version for "mvn-release-test"? (com.damnhandy:mvn-release-test) 1.0.1-SNAPSHOT: : 
+
+Once you answer these, you'll see the build execute and you'll see this in at the end of the build output:
+
+	[INFO] Checking in modified POMs...
+	[INFO] Executing: /bin/sh -c cd /root/maven-project && git add -- pom.xml
+	[INFO] Working directory: /root/maven-project
+	[INFO] Executing: /bin/sh -c cd /root/maven-project && git status
+	[INFO] Working directory: /root/maven-project
+	[INFO] Tagging release with the label mvn-release-test-1.0.0...
+	[INFO] Executing: /bin/sh -c cd /root/maven-project && git tag -F /tmp/maven-scm-489854065.commit mvn-release-test-1.0.0
+	[INFO] Working directory: /root/maven-project
+	[INFO] Executing: /bin/sh -c cd /root/maven-project && git push http://jyaya:password@gitbucket:8080/git/jyaya/maven-project.git mvn-release-test-1.0.0
+	[INFO] Working directory: /root/maven-project
+	[INFO] Executing: /bin/sh -c cd /root/maven-project && git ls-files
+	[INFO] Working directory: /root/maven-project
+
+Note the John Yaya's password is clearly visible where the Git URL is displayed. By default, Maven usese version 2.3.2 of the Maven Release plugin. This is fixed as of [2.4.2](https://issues.apache.org/jira/browse/MRELEASE-846), but you have to explicitly define the version of the Maven Release plugin to use:
+
+				   <plugin>
+                       <groupId>org.apache.maven.plugins</groupId>
+                       <artifactId>maven-release-plugin</artifactId>
+                       <version>2.5.3</version>
+                   </plugin>
+
+If you're also using the [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin), you have another issue. Continue on with the release procecss and run:
+
+	mvn release:perform
+	
+This will run now publish the release artifacts to Artifactory. Once complete, point your web browser on your host system to the Artifactory instance at either:
+
+http://192.168.99.100:8081/artifactory/webapp/#/artifacts/browse/tree/General/libs-snapshot-local/com/damnhandy/mvn-release-test/1.0.0-SNAPSHOT/mvn-release-test-1.0.0-20160325.134639-1.jar
+
+or
+ 
+http://localhost:8081/artifactory/webapp/#/artifacts/browse/tree/General/libs-snapshot-local/com/damnhandy/mvn-release-test/1.0.0-SNAPSHOT/mvn-release-test-1.0.0-20160325.134639-1.jar
+
+click the arrow next to the JAR icon to expand it, click on the `git.properties` file and then select the "view source" tab in the right-hand panel. You should now see that the Git password is still present in the `git.remote.origin.url` property:
+
+![Screenshot](images/screenshot.png)
 
 
 
