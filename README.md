@@ -27,7 +27,16 @@ This will startup both Artifactory and Gitbucket and startup the "workspace" con
 
 	root@4bd4bb1a3678:~# cp settings.xml .m2/
 
-For some reason, files under hidden directories don't be copied into the hidden directory in the container. 
+For some reason, files under hidden directories don't be copied into the hidden directory in the container. Next, checkout the project from Gitbucket:
+
+	git clone http://gitbucket:8080/git/jyaya/maven-project.git
+
+You should be able to build the project now:
+
+	cd maven-project
+	mvn clean install
+
+
 
 
 
