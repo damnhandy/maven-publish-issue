@@ -23,7 +23,7 @@ To run everything together,  you will need [Docker Compose](https://docs.docker.
 
 	docker-compose run workspace /bin/bash
 
-This will startup both Artifactory and Gitbucket and startup the "workspace" container and dump you into the container where you'll be able to execute the Maven and git commands. Once your in the containers shell, copy the `settings.xml` to the `/root/.m2` directory:
+This will startup both Artifactory and Gitbucket and startup the "workspace" container and dump you into the container where you'll be able to execute the Maven and git commands. Once you are in the containers shell, copy the `settings.xml` to the `/root/.m2` directory:
 
 	root@4bd4bb1a3678:~# cp settings.xml .m2/
 
@@ -72,11 +72,11 @@ Once you answer these, you'll see the build execute and you'll see this in at th
 
 Note the John Yaya's password is clearly visible where the Git URL is displayed. By default, Maven uses version 2.3.2 of the Maven Release plugin. This is fixed as of [2.4.2](https://issues.apache.org/jira/browse/MRELEASE-846), but you have to explicitly define the version of the Maven Release plugin to use:
 
-				   <plugin>
-                       <groupId>org.apache.maven.plugins</groupId>
-                       <artifactId>maven-release-plugin</artifactId>
-                       <version>2.5.3</version>
-                   </plugin>
+	<plugin>
+	   <groupId>org.apache.maven.plugins</groupId>
+	   <artifactId>maven-release-plugin</artifactId>
+	   <version>2.5.3</version>
+	</plugin>
 
 If you're also using the [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin), you have another issue. Continue on with the release process and run:
 
@@ -90,7 +90,7 @@ or
  
 http://localhost:8081/artifactory/webapp/#/artifacts/browse/tree/General/libs-snapshot-local/com/damnhandy/mvn-release-test/1.0.0-SNAPSHOT/mvn-release-test-1.0.0-20160325.134639-1.jar
 
-click the arrow next to the JAR icon to expand it, click on the `git.properties` file and then select the "view source" tab in the right-hand panel. You should now see that the Git password is still present in the `git.remote.origin.url` property:
+Click the arrow next to the JAR icon to expand it, click on the `git.properties` file and then select the "view source" tab in the right-hand panel. You should now see that the Git password is still present in the `git.remote.origin.url` property:
 
 ![Screenshot](images/screenshot.png)
 
