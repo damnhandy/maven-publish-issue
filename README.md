@@ -6,7 +6,7 @@ This project demonstrates a few ways Maven can leak password information.  The i
    * [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin) 
    * [Maven SCM Git Provider](https://maven.apache.org/scm/maven-scm-providers/maven-scm-providers-git/)
 
-The combination of these plugins __will__ expose your Git passwords when using Git over either HTTP or HTTPS when the Maven Release plugins `release:prepare` and `release:perform` plugins are invoked. Additionally if you're using the [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin)  to capture commit informtaiton in your build, the generated `git.properties` will contain your user name and password when using the default setting and this file __will__ be visible in the Maven repository your artifact is published to. 
+The combination of these plugins __will__ expose your Git passwords when using Git over either HTTP or HTTPS when the Maven Release plugins `release:prepare` and `release:perform` plugins are invoked. Additionally if you're using the [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin)  to capture commit information in your build, the generated `git.properties` will contain your user name and password when using the default setting and this file __will__ be visible in the Maven repository your artifact is published to. 
 
 ## Project Structure
 
@@ -15,11 +15,11 @@ Because these issues only manifest themselves at release time, I've created an e
 * An instance of [Artifactory OSS](https://www.jfrog.com/open-source/) for our Maven repository
 * An instance of [Gitbucket](https://github.com/gitbucket/gitbucket) for the git repo manager
 * A user named [John Yaya](http://www.imdb.com/character/ch0113163/) who has a username of `jyaya` and a password of `password`
-* A conatiner with Maven and Git which also mounts a sample Maven project to demo the issue.
+* A container with Maven and Git which also mounts a sample Maven project to demo the issue.
 
 ## Running the environment
 
-To run everything together,  you will need [Docker Compose](https://docs.docker.com/compose/) installed. To execute the environent, run:
+To run everything together,  you will need [Docker Compose](https://docs.docker.com/compose/) installed. To execute the environment, run:
 
 	docker-compose run workspace /bin/bash
 
@@ -40,7 +40,7 @@ If build is successful, you can now test the issues.
 
 ## Running the release
 
-The `settings.xml` file contains plain text passwords for both Artifactory and Gitbucket. They are crappy passwords and aren't the way you'd want to do things in a prodution environment. I did it this way to demo the bugs. To see what is going on, run the Maven Release plugin prepare goal by running:
+The `settings.xml` file contains plain text passwords for both Artifactory and Gitbucket. They are crappy passwords and aren't the way you'd want to do things in a production environment. I did it this way to demo the bugs. To see what is going on, run the Maven Release plugin prepare goal by running:
 
 	mvn release:prepare
 
@@ -70,7 +70,7 @@ Once you answer these, you'll see the build execute and you'll see this in at th
 	[INFO] Executing: /bin/sh -c cd /root/maven-project && git ls-files
 	[INFO] Working directory: /root/maven-project
 
-Note the John Yaya's password is clearly visible where the Git URL is displayed. By default, Maven usese version 2.3.2 of the Maven Release plugin. This is fixed as of [2.4.2](https://issues.apache.org/jira/browse/MRELEASE-846), but you have to explicitly define the version of the Maven Release plugin to use:
+Note the John Yaya's password is clearly visible where the Git URL is displayed. By default, Maven uses version 2.3.2 of the Maven Release plugin. This is fixed as of [2.4.2](https://issues.apache.org/jira/browse/MRELEASE-846), but you have to explicitly define the version of the Maven Release plugin to use:
 
 				   <plugin>
                        <groupId>org.apache.maven.plugins</groupId>
@@ -78,7 +78,7 @@ Note the John Yaya's password is clearly visible where the Git URL is displayed.
                        <version>2.5.3</version>
                    </plugin>
 
-If you're also using the [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin), you have another issue. Continue on with the release procecss and run:
+If you're also using the [Maven Git Commit ID Plugin](https://github.com/ktoso/maven-git-commit-id-plugin), you have another issue. Continue on with the release process and run:
 
 	mvn release:perform
 	
@@ -96,7 +96,7 @@ click the arrow next to the JAR icon to expand it, click on the `git.properties`
 
 ## Ways to avoid these issues
 
-So this issue kind of sucks, especially if you're working on public projects and using these plugins with HTTP/HTTPS. Basically, your passwords are probably in the CI logs for any Jenkins, TravisCI, or other CI systems logs.  Additionally the artifacts might also contain `git.properties` file with your using name and password in it. There's a few ways to avoid these issues such as:
+So this issue kind of sucks, especially if you're working on public projects and using these plugins with HTTP/HTTPS. Basically, your passwords are probably in the CI logs for any Jenkins, TravisCI, or other CI systems logs.  Additionally the artifacts might also contain `git.properties` file with your username and password in it. There's a few ways to avoid these issues such as:
 
 * Use version 2.4.3 or higher of the Maven release plugin
 * If you're using the Git Commit ID Plugin, exclude the `git.remote.origin.url` property from your build
